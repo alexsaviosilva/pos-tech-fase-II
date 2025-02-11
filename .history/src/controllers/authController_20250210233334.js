@@ -23,8 +23,7 @@ const AuthController = {
 
       console.log("🔒 Gerando hash da senha...");
       const hashedPassword = await bcrypt.hash(password, 10);
-      console.log("🔑 Hash gerado antes de salvar:", hashedPassword);
-
+      console.log("🔑 Hash gerado:", hashedPassword);
 
       const user = new User({ name, email, password: hashedPassword, role, disciplina });
       await user.save();

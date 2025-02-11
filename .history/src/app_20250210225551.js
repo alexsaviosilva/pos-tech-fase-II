@@ -10,6 +10,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// ✅ Registra as rotas ANTES da conexão com o banco
 routes(app);
 
 async function startServer() {

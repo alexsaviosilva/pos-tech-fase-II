@@ -23,8 +23,6 @@ const AuthController = {
 
       console.log("🔒 Gerando hash da senha...");
       const hashedPassword = await bcrypt.hash(password, 10);
-      console.log("🔑 Hash gerado antes de salvar:", hashedPassword);
-
 
       const user = new User({ name, email, password: hashedPassword, role, disciplina });
       await user.save();
@@ -47,33 +45,26 @@ const AuthController = {
     try {
       console.log("📌 Tentando login com:", email, "Role:", role);
 
+     
       email = email.trim().toLowerCase();
 
+     
       const user = await User.findOne({ email });
       if (!user) {
         console.log("⚠️ Usuário não encontrado:", email);
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
-      console.log("🔍 Dados do usuário encontrado:", {
-        email: user.email,
-        role: user.role,
-        passwordStored: user.password,
-      });
-
-      console.log("🔍 Senha digitada no login:", password);
-      console.log("🔍 Hash armazenado no banco:", user.password);
-      
+     
+      console.log("🔍 Comparando senha...");
       const isValid = await bcrypt.compare(password, user.password);
-      console.log("🔑 Resultado da comparação:", isValid ? "✅ Senha correta" : "❌ Senha incorreta");
+      console.log("🔑 Resultado da comparação:", isValid ? "Senha correta" : "Senha incorreta");
 
       if (!isValid) {
-        console.log("❌ Erro: Senha incorreta para o usuário", email);
         return res.status(401).json({ message: "Credenciais inválidas" });
       }
 
       if (role && user.role !== role) {
-        console.log("⚠️ Role incorreta:", { roleDigitada: role, roleCadastrada: user.role });
         return res.status(403).json({ message: "Tipo de usuário incorreto!" });
       }
 

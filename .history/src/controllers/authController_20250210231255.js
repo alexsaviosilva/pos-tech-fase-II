@@ -3,19 +3,24 @@ import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 
 const AuthController = {
- 
+  /**
+   * Registrar um novo usuário
+   */
   async register(req, res) {
     let { name, email, password, role, disciplina } = req.body;
 
     try {
       console.log("📌 Recebendo requisição para registro:", { email, role });
 
+      // Validação básica de campos obrigatórios
       if (!name || !email || !password || !role) {
         return res.status(400).json({ message: "Todos os campos são obrigatórios" });
       }
 
+      // Formatação do e-mail
       email = email.trim().toLowerCase();
 
+      // Verifica se o usuário já existe no banco de dados
       const userExists = await User.findOne({ email });
       if (userExists) {
         return res.status(400).json({ message: "Usuário já cadastrado" });
@@ -23,9 +28,8 @@ const AuthController = {
 
       console.log("🔒 Gerando hash da senha...");
       const hashedPassword = await bcrypt.hash(password, 10);
-      console.log("🔑 Hash gerado antes de salvar:", hashedPassword);
 
-
+      // Criando novo usuário
       const user = new User({ name, email, password: hashedPassword, role, disciplina });
       await user.save();
 
@@ -40,48 +44,46 @@ const AuthController = {
     }
   },
 
- 
+  /**
+   * Login de usuário
+   */
   async login(req, res) {
     let { email, password, role } = req.body;
 
     try {
       console.log("📌 Tentando login com:", email, "Role:", role);
 
+      // Normalização do e-mail
       email = email.trim().toLowerCase();
 
+      // Busca usuário pelo e-mail
       const user = await User.findOne({ email });
       if (!user) {
         console.log("⚠️ Usuário não encontrado:", email);
         return res.status(404).json({ message: "Usuário não encontrado" });
       }
 
-      console.log("🔍 Dados do usuário encontrado:", {
-        email: user.email,
-        role: user.role,
-        passwordStored: user.password,
-      });
-
-      console.log("🔍 Senha digitada no login:", password);
-      console.log("🔍 Hash armazenado no banco:", user.password);
-      
+      // Comparação de senha com bcrypt
+      console.log("🔍 Comparando senha...");
       const isValid = await bcrypt.compare(password, user.password);
-      console.log("🔑 Resultado da comparação:", isValid ? "✅ Senha correta" : "❌ Senha incorreta");
+      console.log("🔑 Resultado da comparação:", isValid ? "Senha correta" : "Senha incorreta");
 
       if (!isValid) {
-        console.log("❌ Erro: Senha incorreta para o usuário", email);
         return res.status(401).json({ message: "Credenciais inválidas" });
       }
 
+      // Verifica se a role informada corresponde ao usuário encontrado
       if (role && user.role !== role) {
-        console.log("⚠️ Role incorreta:", { roleDigitada: role, roleCadastrada: user.role });
         return res.status(403).json({ message: "Tipo de usuário incorreto!" });
       }
 
+      // Verifica se a variável de ambiente está definida
       if (!process.env.JWT_SECRET) {
         console.error("🚨 Erro: JWT_SECRET não definido nas variáveis de ambiente.");
         return res.status(500).json({ message: "Erro interno no servidor" });
       }
 
+      // Gera um token JWT
       const token = jwt.sign(
         { id: user._id, role: user.role },
         process.env.JWT_SECRET,
@@ -100,7 +102,9 @@ const AuthController = {
     }
   },
 
-
+  /**
+   * Validação do Token JWT
+   */
   async validateToken(req, res) {
     try {
       const token = req.headers.authorization?.split(" ")[1];

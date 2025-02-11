@@ -10,8 +10,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-routes(app);
-
 async function startServer() {
   try {
     const conexao = await conectaBanco(); 
@@ -22,6 +20,9 @@ async function startServer() {
 
     conexao.once("open", () => {
       console.log("✅ Conexão com o banco de dados estabelecida com sucesso!");
+
+    
+      routes(app);
     });
 
   } catch (error) {

@@ -2,6 +2,7 @@ import Post from "../models/Post.js";
 import User from "../models/User.js";
 
 class PostController {
+  // Método para listar posts de um autor específico
   static async listarPostsPorAutor(req, res) {
     try {
       const autorId = req.params.autorId;
@@ -20,6 +21,7 @@ class PostController {
     }
   }
 
+  // Listar todas as publicações
   static async listarPost(req, res) {
     try {
       console.log("📄 Buscando todas as publicações...");
@@ -37,6 +39,7 @@ class PostController {
     }
   }
 
+  // Buscar publicação por ID
   static async listarPostPorId(req, res) {
     const { id } = req.params;
 
@@ -56,6 +59,7 @@ class PostController {
     }
   }
 
+  // Criar uma nova publicação
   static async cadastrarPost(req, res) {
     const { titulo, descricao, autor, imagem } = req.body;
 
@@ -86,6 +90,7 @@ class PostController {
     }
   }
 
+  // Atualizar uma publicação existente
   static async atualizarPost(req, res) {
     const { id } = req.params;
     const { titulo, descricao, autor, imagem } = req.body;
@@ -120,6 +125,7 @@ class PostController {
     }
   }
 
+  // Excluir uma publicação
   static async excluirPost(req, res) {
     const { id } = req.params;
 

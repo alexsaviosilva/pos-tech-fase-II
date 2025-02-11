@@ -36,20 +36,15 @@ const userSchema = new mongoose.Schema(
       },
       validate: {
         validator: function (value) {
-          if (this.role === "professor" && !value) {
-            return false; 
-          }
-          if (this.role === "aluno" && value) {
-            return false; 
-          }
-          return true;
+          return this.role !== "professor" || !!value;
         },
-        message: "Professores devem ter uma disciplina associada e alunos não podem ter disciplina.",
+        message: "Professores devem ter uma disciplina associada.",
       },
     },
   },
   { timestamps: true }
 );
+
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next(); 
@@ -63,6 +58,7 @@ userSchema.pre("save", async function (next) {
   }
 });
 
+
 userSchema.methods.isValidPassword = async function (password) {
   try {
     return await bcrypt.compare(password, this.password);
@@ -71,6 +67,7 @@ userSchema.methods.isValidPassword = async function (password) {
     throw error;
   }
 };
+
 
 userSchema.methods.toJSON = function () {
   const user = this.toObject();
