@@ -5,7 +5,7 @@ import area from "./areaRoutes.js";
 import professores from "./professoresRoutes.js";
 import disciplinasRoutes from "./disciplinasRoutes.js"; // Caminho correto
 import { serveSwagger, setupSwagger } from "../config/swagger.js";
-import alunoRoutes from "./alunosRoutes.js"; 
+import alunoRoutes from "./alunoRoutes.js"; 
 
 const routes = (app) => {
   app.use(express.json());

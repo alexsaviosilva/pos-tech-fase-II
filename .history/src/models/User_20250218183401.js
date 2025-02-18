@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs"; 
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
@@ -29,33 +29,34 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "professor", "aluno"],
       default: "aluno",
     },
-   disciplina: {
-  type: String,
-  required: function () {
-    return this.role === "professor";
-  },
-  validate: {
-    validator: function (value) {
-      if (this.role === "professor" && !value) {
-        return false; 
-      }
-      if (this.role === "aluno" && value) {
-        return false; 
-      }
-      return true;
+    disciplina: {
+      type: String,
+      required: function () {
+        return this.role === "professor"; // Apenas professores precisam de disciplina
+      },
+      validate: {
+        validator: function (value) {
+          if (this.role === "professor" && !value) {
+            return false; // Professor sem disciplina → erro
+          }
+          if (this.role === "aluno" && value) {
+            return false; // Aluno com disciplina → erro
+          }
+          return true;
+        },
+        message: function () {
+          return this.role === "professor"
+            ? "Professores devem ter uma disciplina associada."
+            : "Alunos não podem ter disciplina.";
+        },
+      },
+      default: null, // 🔹 Garante que alunos tenham disciplina = null
     },
-    message: function (props) {
-      return props.value
-        ? "Alunos não podem ter disciplina."
-        : "Professores devem ter uma disciplina associada.";
-    },
-  },
-  default: null, // 🔹 Garante que alunos tenham disciplina = null
-},
   },
   { timestamps: true }
 );
 
+// 🔒 Hash da senha antes de salvar no banco
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next(); 
   try {
@@ -68,6 +69,7 @@ userSchema.pre("save", async function (next) {
   }
 });
 
+// 🔑 Método para verificar a senha
 userSchema.methods.isValidPassword = async function (password) {
   try {
     return await bcrypt.compare(password, this.password);
@@ -77,6 +79,7 @@ userSchema.methods.isValidPassword = async function (password) {
   }
 };
 
+// 🔹 Remove a senha antes de retornar os dados do usuário
 userSchema.methods.toJSON = function () {
   const user = this.toObject();
   delete user.password;

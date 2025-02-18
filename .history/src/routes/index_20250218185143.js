@@ -5,7 +5,6 @@ import area from "./areaRoutes.js";
 import professores from "./professoresRoutes.js";
 import disciplinasRoutes from "./disciplinasRoutes.js"; // Caminho correto
 import { serveSwagger, setupSwagger } from "../config/swagger.js";
-import alunoRoutes from "./alunosRoutes.js"; 
 
 const routes = (app) => {
   app.use(express.json());
@@ -19,8 +18,8 @@ const routes = (app) => {
   app.use("/auth", auth);
   app.use("/area", area);
   app.use("/professores", professores);
-  app.use("/disciplinas", disciplinasRoutes);
-  app.use("/aluno", alunoRoutes); 
+  app.use("/disciplinas", disciplinasRoutes); // �� Corrigido aqui!
+  app.use("/aluno", alunoRoutes); // 🔥 Corrigido aqui!
 
   app.use("/api-docs", serveSwagger, setupSwagger);
 

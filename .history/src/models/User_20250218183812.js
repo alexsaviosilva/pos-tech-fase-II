@@ -29,29 +29,25 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "professor", "aluno"],
       default: "aluno",
     },
-   disciplina: {
-  type: String,
-  required: function () {
-    return this.role === "professor";
-  },
-  validate: {
-    validator: function (value) {
-      if (this.role === "professor" && !value) {
-        return false; 
-      }
-      if (this.role === "aluno" && value) {
-        return false; 
-      }
-      return true;
+    disciplina: {
+      type: String,
+      required: function () {
+        return this.role === "professor";
+      },
+      validate: {
+        validator: function (value) {
+          if (this.role === "professor" && !value) {
+            return false; 
+          }
+          if (this.role === "aluno" && value) {
+            return false; 
+          }
+          return true;
+        },
+        
+        message: "Professores devem ter uma disciplina associada e alunos não podem ter disciplina.",
+      },
     },
-    message: function (props) {
-      return props.value
-        ? "Alunos não podem ter disciplina."
-        : "Professores devem ter uma disciplina associada.";
-    },
-  },
-  default: null, // 🔹 Garante que alunos tenham disciplina = null
-},
   },
   { timestamps: true }
 );
