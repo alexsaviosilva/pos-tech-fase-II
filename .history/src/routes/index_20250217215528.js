@@ -2,14 +2,14 @@ import express from "express";
 import post from "./postsRoutes.js";
 import auth from "./authRoutes.js";
 import area from "./areaRoutes.js";
-import professores from "./professoresRoutes.js";
-import disciplinasRoutes from "./disciplinasRoutes.js"; // Caminho correto
+import professores from "./professoresRoutes.js"; 
 import { serveSwagger, setupSwagger } from "../config/swagger.js";
 
 const routes = (app) => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
+ 
   app.route("/").get((req, res) => {
     res.status(200).send({ message: "Challenge - 2: API Funcionando!" });
   });
@@ -17,8 +17,7 @@ const routes = (app) => {
   app.use("/posts", post);
   app.use("/auth", auth);
   app.use("/area", area);
-  app.use("/professores", professores);
-  app.use("/disciplinas", disciplinasRoutes); // 🔥 Corrigido aqui!
+  app.use("/professores", professores); 
 
   app.use("/api-docs", serveSwagger, setupSwagger);
 
@@ -37,6 +36,11 @@ const routes = (app) => {
       error: err.message,
     });
   });
+
+  const disciplinasRoutes = require("./routes/disciplinasRoutes");
+
+  app.use("/disciplinas", disciplinasRoutes);
+
 };
 
 export default routes;

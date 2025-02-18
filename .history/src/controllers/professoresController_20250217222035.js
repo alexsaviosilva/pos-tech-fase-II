@@ -88,38 +88,4 @@ class ProfessoresController {
 
       let updateData = { name, email, disciplina };
       if (password) {
-        console.log("🔒 Atualizando senha...");
-        updateData.password = await bcrypt.hash(password, 10);
-      }
-
-      const professorAtualizado = await User.findByIdAndUpdate(id, updateData, { new: true });
-
-      res.status(200).json({ message: "Professor atualizado com sucesso!", professor: professorAtualizado });
-    } catch (erro) {
-      console.error("🚨 Erro ao atualizar professor:", erro);
-      res.status(500).json({ message: "Erro ao atualizar professor." });
-    }
-  }
-
-  // 🗑️ Excluir professor
-  static async excluirProfessor(req, res) {
-    try {
-      const { id } = req.params;
-      console.log(`🗑️ Excluindo professor ID: ${id}`);
-
-      const professor = await User.findById(id);
-      if (!professor || professor.role !== "professor") {
-        return res.status(404).json({ message: "Professor não encontrado." });
-      }
-
-      await User.findByIdAndDelete(id);
-
-      res.status(200).json({ message: "Professor excluído com sucesso!" });
-    } catch (erro) {
-      console.error("🚨 Erro ao excluir professor:", erro);
-      res.status(500).json({ message: "Erro ao excluir professor." });
-    }
-  }
-}
-
-export default ProfessoresController;
+        conso

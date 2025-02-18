@@ -3,7 +3,7 @@ import post from "./postsRoutes.js";
 import auth from "./authRoutes.js";
 import area from "./areaRoutes.js";
 import professores from "./professoresRoutes.js";
-import disciplinasRoutes from "./disciplinasRoutes.js"; // Caminho correto
+import disciplinasRoutes from "./disciplinasRoutes.js"; // Import corrigido
 import { serveSwagger, setupSwagger } from "../config/swagger.js";
 
 const routes = (app) => {
@@ -18,7 +18,7 @@ const routes = (app) => {
   app.use("/auth", auth);
   app.use("/area", area);
   app.use("/professores", professores);
-  app.use("/disciplinas", disciplinasRoutes); // 🔥 Corrigido aqui!
+  app.use("/disciplinas", disciplinasRoutes); // Adicionando a rota corrigida
 
   app.use("/api-docs", serveSwagger, setupSwagger);
 
